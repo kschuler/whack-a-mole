@@ -8,13 +8,18 @@ Initial Version: April 24, 2015, Kathryn Schuler
 from psychopy import visual, gui, core, info, event, data
 import datetime, os, sys, itertools
 
+"IS THIS CHANGED?"
+
+"WHAT ABOUT THIS?"
+
+
 """
 *********************************************************************************
 SETUP EXPERIMENT PARAMTERS
 *********************************************************************************
 """
 EXP_ID = 0000
-EXP_INFO = {						# used to generate dialogue box to request info		
+EXP_INFO = {						# used to generate dialogue box to request info
 	'subject':'', 					# subject ID (requests typing)
 	'condition': ['A', 'B']   	 	# list of possible conditions (user selects 1)
 }
@@ -89,17 +94,17 @@ BOXES = {
 	'color-line': 'gray',
 	'box-size':[101, 101],
 	'pos': [
-	(-225, -75), 
-	(75, 75), 
-	(-225, 75), 
-	(-75, 75), 
+	(-225, -75),
+	(75, 75),
+	(-225, 75),
+	(-75, 75),
 	(-75, -75),
 	(375, 75),
-	(225, 75), 
-	(-375, -75), 
-	(225, -75), 
+	(225, 75),
+	(-375, -75),
+	(225, -75),
 	(375, -75),
-	(75, -75), 
+	(75, -75),
 	(-375, 75)
 	]
 }
@@ -110,7 +115,7 @@ RATING_SCALE = {
 	}
 """
 *********************************************************************************
- The main experiment class, which contains all the experiments objects and methods. 
+ The main experiment class, which contains all the experiments objects and methods.
 *********************************************************************************
 """
 
@@ -119,15 +124,15 @@ class WhackAMoleExperiment(object):
 		self.expClock = core.Clock()
 		self.today = datetime.datetime.now()
 		#self.dataFile = open('data/'+EXP_INFO['subject']+'-'+self.today.strftime('%Y-%m-%d-%H%M%S')+'.csv', 'w')
-		self.win = visual.Window(units='pix', 
-			winType = 'pyglet', screen = MONITOR['screen'], color = MONITOR['bg-color'], 
+		self.win = visual.Window(units='pix',
+			winType = 'pyglet', screen = MONITOR['screen'], color = MONITOR['bg-color'],
 			size = MONITOR['size'],  fullscr = True, allowGUI = True
 		)
 		self.mouse = event.Mouse(win = self.win,
 			visible = True
-		)		
+		)
 		self.instructions = visual.TextStim(self.win,
-			text = '', pos = TEXT['pos'], color = TEXT['color'], height = TEXT['height'], 
+			text = '', pos = TEXT['pos'], color = TEXT['color'], height = TEXT['height'],
 			font = TEXT['font'], wrapWidth = TEXT['wrap']
 		)
 		self.accuracy = visual.TextStim(self.win,
@@ -137,18 +142,18 @@ class WhackAMoleExperiment(object):
 			text = '', pos = (0, 200), color = 'black', height = 25, font = 'Arial', wrapWidth = 800
 		)
 		self.level = visual.TextStim(self.win,
-			text = '', pos = PROG_BAR['level-pos'], color = TEXT['color'], height = TEXT['height'], 
+			text = '', pos = PROG_BAR['level-pos'], color = TEXT['color'], height = TEXT['height'],
 			font = TEXT['font'], wrapWidth = TEXT['wrap']
 		)
 		self.progressOutline = visual.Rect(self.win,
-			units = 'pix', pos = PROG_BAR['pos'], width = PROG_BAR['width'], height = PROG_BAR['height']+3, 
+			units = 'pix', pos = PROG_BAR['pos'], width = PROG_BAR['width'], height = PROG_BAR['height']+3,
 			lineColor = PROG_BAR['color-outline']
 		)
 		self.progressBar = visual.Rect(self.win,
-			units = 'pix', pos = PROG_BAR['pos'], width = PROG_BAR['width'], height = PROG_BAR['height'], 
+			units = 'pix', pos = PROG_BAR['pos'], width = PROG_BAR['width'], height = PROG_BAR['height'],
 			fillColor = PROG_BAR['color-fill'], opacity = PROG_BAR['fill-opacity']
 		)
-		self.ratingScale = visual.RatingScale(self.win, 
+		self.ratingScale = visual.RatingScale(self.win,
 			pos = RATING_SCALE['pos'],  low=1, high=5, precision = 1, textColor = TEXT['color'],
 			marker = 'triangle', size = 0.60, stretch = 1.0, lineColor = TEXT['color'],
 			markerColor = 'blue', scale = None
@@ -163,18 +168,18 @@ class WhackAMoleExperiment(object):
 			units = 'pix', size = (100,100), pos = (0,0),
 			image = 'images/mole.png'
 		)
-	
+
 	def runExperiment(self):
 		self.setupExperiment()
 		self.exposure()
 		#self.ratingTest()
 		#self.displayInstructions(END_INSTRUCT)
-		
+
 	def setupExperiment(self):
 		self.win.setMouseVisible(MOUSE_VISIBLE)
 		self.infoData = [EXP_ID, self.today, EXP_INFO['subject'], EXP_INFO['condition']]
-		self.initializeBoxes()	
-		
+		self.initializeBoxes()
+
 	def exposure(self):
 		EXP_INFO['expPhase'] = 'exposure'
 		self.loadTrials('conditions/'+EXP_INFO['condition']+'-exposure.xlsx', EXPOSURE['order'], EXPOSURE['reps'])
@@ -197,26 +202,26 @@ class WhackAMoleExperiment(object):
 		for pos in range(len(BOXES['pos'])):
 			box = visual.Rect(self.win, units = 'pix', height = BOXES['box-size'][0], width = BOXES['box-size'][1], pos = BOXES['pos'][pos], lineColor = BOXES['color-line'])
 			self.boxes.append(box)
-				
+
 	def loadTrials(self, thisFile, thisMethod = 'random', numReps=1):
 		self.conditionsFile = data.importConditions(thisFile)
-		self.trials = data.TrialHandler(self.conditionsFile, 
+		self.trials = data.TrialHandler(self.conditionsFile,
 			method = thisMethod, nReps = numReps, extraInfo = EXP_INFO)
-		
+
 	def changeProgressBar(self, thisTrial, numTrials):
 		pixels_per_trial = PROG_BAR['width']/(numTrials)
 		pixels_this_trial = (thisTrial+1)*pixels_per_trial
 		width = PROG_BAR['width'] - pixels_this_trial
-		newxpos = ((-PROG_BAR['width']/2) + (PROG_BAR['width']/2 - pixels_this_trial))/2 
+		newxpos = ((-PROG_BAR['width']/2) + (PROG_BAR['width']/2 - pixels_this_trial))/2
 		self.progressBar.setWidth(width)
 		self.progressBar.setPos([newxpos, PROG_BAR['pos'][1]])
-	
+
 	def generateDisplay(self, whichLevel):
 		self.drawBoxes()
 		self.mole.draw()
 		self.drawProgressBar(whichLevel)
 		self.win.flip()
-	
+
 	def displayInstructions(self, whichText = '', isTrial = False):
 		self.instructions.setText(whichText)
 		self.instructions.draw()
@@ -225,7 +230,7 @@ class WhackAMoleExperiment(object):
 			self.win.flip()
 			event.waitKeys(keyList=KEYS_NEXT)
 		else: pass
-		
+
 	def moveMole(self, molePos):
 		"""set the position of the mole to molePos argument"""
 		self.mole.setPos(molePos)
@@ -247,13 +252,13 @@ class WhackAMoleExperiment(object):
 		self.expClock.reset()
 		self.mouse.clickReset()
 		attemptno, iscorrect = (0, False)
-		return attemptno, iscorrect	
-	
+		return attemptno, iscorrect
+
 	def checkCorrect(self, correctBox, mousePos):
 		if correctBox.contains(mousePos): iscorrect = True
 		else: iscorrect = False
 		return iscorrect
-		
+
 	def writeData(self, dataList, seperate = '', newLine = True):
 		"""writes a data file."""
 		self.dataFile = open('data/'+EXP_INFO['subject']+'-'+self.today.strftime('%Y-%m-%d-%H%M%S')+'.csv', 'a')
@@ -261,11 +266,11 @@ class WhackAMoleExperiment(object):
 		for item in itertools.chain(self.infoData, dataList):
 			self.dataFile.write(str(item)+ seperate)
 		self.dataFile.close()
-		
+
 	def drawBoxes(self, isTrue = True):
 		for box in self.boxes:
 			box.setAutoDraw(isTrue)
-	
+
 	def drawProgressBar(self, whichLevel = '0'):
 		self.progressOutline.draw()
 		self.progressBar.draw()
@@ -275,7 +280,7 @@ class WhackAMoleExperiment(object):
 	def distance(self):
 		#tell how far mole moved from last time
 		dist = math.hypot(x2 - x1, y2 - y1)
-		
+
 	def displayFeedback(self, correctTrials, trialNumber, elapsedTime):
 		"""displays feedback about number of correct trials (accuracy) and how long the block took."""
 		if correctTrials/trialNumber > 0.8: improveText = 'go faster!'
@@ -289,14 +294,14 @@ class WhackAMoleExperiment(object):
 
 	def countCorrectTrials(self, attemptno, iscorrect, correctTrials):
 		"""counter for the number of correct trials"""
-		if attemptno == 1 and iscorrect == 1: 
+		if attemptno == 1 and iscorrect == 1:
 			correctTrials += 1
 		return correctTrials
 
 # Request user input with dialog box
 if not gui.DlgFromDict(EXP_INFO, order=['subject', 'condition']).OK:
 		core.quit()
-		
-		
+
+
 exp = WhackAMoleExperiment()
 exp.runExperiment()
