@@ -9,6 +9,7 @@ from psychopy import visual, core, event #, info, data
 #import datetime, os, sys, itertools
 
 class WhackAMoleExperiment(object):
+
 	def __init__(self):
 		self.expInfo = {
 			'exp-id': 0000,											# experiment ID number (fixed value)
@@ -28,7 +29,7 @@ class WhackAMoleExperiment(object):
 		 	win = self.expWindow,
 		 	visible = False
 		)
-		self.expText = visual.TextStim(
+		self.instructions = visual.TextStim(
 			win = self.expWindow,
 			pos = [0, 300],
 			color = 'gray',
@@ -80,31 +81,33 @@ class WhackAMoleExperiment(object):
 			pos = (0,0),
 			image = 'images/mole.png'
 		)
-	def generateDisplay(self):
-		self.progBarOutline.draw()
-		self.progBarLevel.draw()
-		self.progBar.draw()
-		self.expText.draw()
-		self.ratingScale.draw()
-		self.mole.draw()
+
+	def runExperiment(self):
+		#self.setupExperiment()
+		self.displayInstructions("go go gadget")
+		self.displayInstructions("First you are going to do this.")
+		#self.exposurePhase()
+		self.displayInstructions("Next you will have a test.")
+		#self.testPhase()
+		self.displayInstructions("thanks for playing!")
+
+	#def setupExperiment(self):
+
+	def displayInstructions(self, theseInstructs = "instructions here"):
+		self.instructions.setText(theseInstructs)
+		self.instructions.draw()
 		self.expWindow.flip()
-		core.wait(5)
+		event.waitKeys('space')
+
+	def generateDisplay(self, drawList = []):
+		for item in drawList :
+			item.draw()
+		self.expWindow.flip()
+
 
 exp = WhackAMoleExperiment()
-exp.generateDisplay()
+exp.runExperiment()
 
-
-# """
-# *********************************************************************************
-# MAIN EXPERIMENT FUNCTIONS
-# *********************************************************************************
-# """
-# def runExperiment():
-# 	setupExperiment()
-#
-# def setupExperiment():
-#
-#
 
 # class WhackAMoleExperiment(object):
 # 	def __init__(self):
@@ -145,7 +148,8 @@ exp.generateDisplay()
 # 		for pos in range(len(BOXES['pos'])):
 # 			box = visual.Rect(self.win, units = 'pix', height = BOXES['box-size'][0], width = BOXES['box-size'][1], pos = BOXES['pos'][pos], lineColor = BOXES['color-line'])
 # 			self.boxes.append(box)
-#
+
+### YOU PROBABLY DON'T REALLY NEED THIS ONE...
 # 	def loadTrials(self, thisFile, thisMethod = 'random', numReps=1):
 # 		self.conditionsFile = data.importConditions(thisFile)
 # 		self.trials = data.TrialHandler(self.conditionsFile,
