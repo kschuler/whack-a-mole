@@ -1,37 +1,73 @@
 #!/usr/bin/env python
 """
-KSCHULER WHACK-A-MOLE METHOD (describe)
+WHACK-A-MOLE Paradigm
 Initial Version: April 24, 2015, Kathryn Schuler
+Updated Version: May 5, 2016, Kathryn Schuler
 ------------------------
-
 """
 from psychopy import visual, gui, core, info, event, data
 import datetime, os, sys, itertools
-
-
 """
 *********************************************************************************
 SETUP EXPERIMENT PARAMTERS
 *********************************************************************************
 """
-EXP_ID = 0000
-EXP_INFO = {						# used to generate dialogue box to request info
-	'subject':'', 					# subject ID (requests typing)
-	'condition': ['A', 'B']   	 	# list of possible conditions (user selects 1)
+EXP_INFO = {					# used to generate dialogue box to request info
+	'exp-id': 0000				# experiment ID number (fixed value)
+	'subject':'', 				# subject ID (requests user input)
+	'condition': ['A', 'B']   	# list of possible conditions (user selects among options in the list)
 }
-KEYS_QUIT = ['escape']				# keys that quit the experiment
-KEYS_NEXT = ['space']
-MOUSE_VISIBLE = True				# True or False, whether you want to see mouse
-EXPOSURE = {
-	'order': 'sequential',			# probably always want this value to be sequential
-	'reps': 3						# How many times to do the exposure sequence (BLOCKS)
+MONITOR = {
+	'size': [1440, 900],		# pixel dimensions of the monitor
+	'screen': 0,				# if more than 1 screen, which one to display on?
+	'bg-color': 'white',		# what should the background color be?
 	}
-BREAK_AFTER = [15,31,47,63,79,95,111,127,143,159,175,191,207,223,239,255,271,287]		# list of trials to take break after (exposure)
-RATING = {
-	'order': 'sequential',
-	'reps': 1
+MOUSE = {
+	'mouse-visible': True		# should the mouse be visible? (boolean)
+}
+KEYBOARD = {
+	'quit' = ['escape'],		# keys that quit the experiment
+	'next' = ['space']			# keys that advance
+}
+TEXT = {
+	'pos': [0,300],				# [x,y] position of the instructions
+	'height': 20,				# how big is the font?
+	'wrap' : 800,				# how many pixels before words wrap to next line?
+	'color': 'gray',			# what color is the text?
+	'font': 'Arial'				# what font is the text?
 	}
-
+PROG_BAR = {
+	'pos': [0, 350],
+	'height':20,
+	'width':680,
+	'color-outline': 'gray',
+	'color-fill':'black',
+	'fill-opacity':0.8,
+	'level-pos':[400, 350]
+	}
+BOXES = {
+	'color-line': 'gray',
+	'box-size':[101, 101],
+	'pos': [
+	(-225, -75),
+	(75, 75),
+	(-225, 75),
+	(-75, 75),
+	(-75, -75),
+	(375, 75),
+	(225, 75),
+	(-375, -75),
+	(225, -75),
+	(375, -75),
+	(75, -75),
+	(-375, 75)
+	]
+}
+RATING_SCALE = {
+	'pos': [0, -250],
+	'pos-happy': [175, -250],
+	'pos-sad': [-175, -250]
+	}
 """
 *********************************************************************************
 SETUP ONSCREEN INSTRUCTIONS
@@ -59,58 +95,6 @@ Thanks for playing! The experiment is over.
 '''
 """
 *********************************************************************************
-SETUP VISUAL PARAMETERS
-*********************************************************************************
-"""
-MONITOR = {
-	'size': [1440, 900],	#pixel dimensions of the monitor
-	'screen': 0,			#if more than 1 screen, which one to display on?
-	'bg-color': 'white',	#what should the background color be?
-	}
-
-TEXT = {
-	'pos': [0,300],				# [x,y] position of the instructions
-	'height': 20,				# how big to make the font
-	'wrap' : 800,				# how many pixels before words wrap to next line
-	'color': 'gray',			# what color is the text
-	'font': 'Arial'				# what font is the text
-	}
-
-PROG_BAR = {
-	'pos': [0, 350],
-	'height':20,
-	'width':680,
-	'color-outline': 'gray',
-	'color-fill':'black',
-	'fill-opacity':0.8,
-	'level-pos':[400, 350]
-	}
-BOXES = {
-	'number':6,
-	'color-line': 'gray',
-	'box-size':[101, 101],
-	'pos': [
-	(-225, -75),
-	(75, 75),
-	(-225, 75),
-	(-75, 75),
-	(-75, -75),
-	(375, 75),
-	(225, 75),
-	(-375, -75),
-	(225, -75),
-	(375, -75),
-	(75, -75),
-	(-375, 75)
-	]
-}
-RATING_SCALE = {
-	'pos': [0, -250],
-	'pos-happy': [175, -250],
-	'pos-sad': [-175, -250]
-	}
-"""
-*********************************************************************************
  The main experiment class, which contains all the experiments objects and methods.
 *********************************************************************************
 """
@@ -119,7 +103,6 @@ class WhackAMoleExperiment(object):
 	def __init__(self):
 		self.expClock = core.Clock()
 		self.today = datetime.datetime.now()
-		#self.dataFile = open('data/'+EXP_INFO['subject']+'-'+self.today.strftime('%Y-%m-%d-%H%M%S')+'.csv', 'w')
 		self.win = visual.Window(units='pix',
 			winType = 'pyglet', screen = MONITOR['screen'], color = MONITOR['bg-color'],
 			size = MONITOR['size'],  fullscr = True, allowGUI = True
@@ -172,8 +155,8 @@ class WhackAMoleExperiment(object):
 		#self.displayInstructions(END_INSTRUCT)
 
 	def setupExperiment(self):
-		self.win.setMouseVisible(MOUSE_VISIBLE)
-		self.infoData = [EXP_ID, self.today, EXP_INFO['subject'], EXP_INFO['condition']]
+		self.win.setMouseVisible(WINDOW['mouse-visible'])
+		self.infoData = [EXP_INFO['exp-id'], self.today, EXP_INFO['subject'], EXP_INFO['condition']]
 		self.initializeBoxes()
 
 	def exposure(self):
@@ -258,7 +241,8 @@ class WhackAMoleExperiment(object):
 	def writeData(self, dataList, seperate = '', newLine = True):
 		"""writes a data file."""
 		self.dataFile = open('data/'+EXP_INFO['subject']+'-'+self.today.strftime('%Y-%m-%d-%H%M%S')+'.csv', 'a')
-		if newLine == True: self.dataFile.write('\n')
+		if newLine == True:
+			self.dataFile.write('\n')
 		for item in itertools.chain(self.infoData, dataList):
 			self.dataFile.write(str(item)+ seperate)
 		self.dataFile.close()
