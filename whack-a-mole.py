@@ -5,153 +5,112 @@ Initial Version: April 24, 2015, Kathryn Schuler
 Updated Version: May 5, 2016, Kathryn Schuler
 ------------------------
 """
-#from psychopy import visual, core, info, event, data
+from psychopy import visual, core, event #, info, data
 #import datetime, os, sys, itertools
-"""
-*********************************************************************************
-SETUP EXPERIMENT PARAMTERS
-*********************************************************************************
-"""
-EXP_INFO = {
-	'exp-id': 0000,											# experiment ID number (fixed value)
-	'subject': raw_input("enter subject no: "), 			# subject ID (requests user input)
-	'condition': raw_input("enter condition (A or B):")   	# condition (requests user input)
-	'language': raw_input("enter more stuff: " )
-}
-MONITOR = {
-	'size': [1440, 900],		# pixel dimensions of the monitor
-	'screen': 0,				# if more than 1 screen, which one to display on?
-	'bg-color': 'white',		# what should the background color be?
-	}
-MOUSE = {
-	'mouse-visible': True		# should the mouse be visible? (boolean)
-}
-KEYBOARD = {
-	'quit':['escape'],			# keys that quit the experiment
-	'next':['space']			# keys that advance
-}
-TEXT = {
-	'pos': [0,300],				# [x,y] position of the instructions
-	'height': 20,				# how big is the font?
-	'wrap' : 800,				# how many pixels before words wrap to next line?
-	'color': 'gray',			# what color is the text?
-	'font': 'Arial'				# what font is the text?
-	}
-PROG_BAR = {
-	'pos': [0, 350],			# [x,y] position of the progress bar
-	'height':20,				# height of progress bar
-	'width':680,				# width of progress bar
-	'color-outline': 'gray',	# outline color of progress bar
-	'color-fill':'black',		# fill color of progress bar
-	'fill-opacity':0.8,			# opacity of fill in progress bar
-	'level-pos':[400, 350]		# [x,y] position of level information by progress bar
-	}
-BOXES = {
-	'color-line': 'gray',		# box line color
-	'box-size':[101, 101],		# [w,h] size of boxes
-	'pos': [					# a list of the exact [x,y] positions of each box;
-	(-225, -75),					# the legnth of this list tells program
-	(75, 75),						# how many boxes you have
-	(-225, 75),
-	(-75, 75),
-	(-75, -75),
-	(375, 75),
-	(225, 75),
-	(-375, -75),
-	(225, -75),
-	(375, -75),
-	(75, -75),
-	(-375, 75)
-	]
-}
-RATING_SCALE = {
-	'pos': [0, -250],			# [x,y] position of rating scale
-	'pos-happy': [175, -250],	# [x,y] position of happy face
-	'pos-sad': [-175, -250]		# [x,y] position of sad face
-	}
-"""
-*********************************************************************************
-SETUP ONSCREEN INSTRUCTIONS
-*********************************************************************************
-"""
-#These appear before for the exposure phase
-EXPOSE_INSTRUCT = '''
-Exposure.
-'''
-#These appear when the subjects finished a block
-BLOCK_FEEDBACK = '''
-Great Job! You may now take a break.  Press space bar when you are ready to continue.
-'''
-#These appear before the rating phase
-RATING_INSTRUCT = '''
-Rating
-'''
-#These appear during every rating trial
-RATING_TRIAL_INSTRUCT = '''
-How often did the mole move in this order?
-'''
-#These appear at the end of the experiment.
-END_INSTRUCT = '''
-Thanks for playing! The experiment is over.
-'''
-"""
-*********************************************************************************
- The main experiment class, which contains all the experiments objects and methods.
-*********************************************************************************
-"""
 
-print "Hello, conda is working for now."
+class WhackAMoleExperiment(object):
+	def __init__(self):
+		self.expInfo = {
+			'exp-id': 0000,											# experiment ID number (fixed value)
+			'subject': raw_input("enter subject no: "), 			# subject ID (requests user input)
+			'condition': raw_input("enter condition (A or B): ")   	# condition (requests user input)
+		}
+		self.expWindow = visual.Window(
+			units = 'pix',
+		 	winType = 'pyglet',
+			screen = 0,
+			color = 'white',
+		 	size = [1440, 900],
+			fullscr = True,
+			allowGUI = False
+		)
+		self.expMouse = event.Mouse(
+		 	win = self.expWindow,
+		 	visible = False
+		)
+		self.expText = visual.TextStim(
+			win = self.expWindow,
+			pos = [0, 300],
+			color = 'gray',
+			height = 20,
+			font = 'Helvetica',
+			wrapWidth = 800
+		)
+		self.progBarOutline = visual.Rect(
+			win = self.expWindow,
+			pos = [0, 350],
+			width = 680,
+			height = 23,
+			lineColor =  'gray'
+		)
+		self.progBar = visual.Rect(
+			win = self.expWindow,
+			pos = [0, 350],
+			width = 680,
+			height = 20,
+			fillColor = 'black',
+			opacity = 0.8
+		)
+		self.progBarLevel = visual.TextStim(
+			win = self.expWindow,
+			text = 'level 1',
+			pos = [400, 350],
+			color = 'gray',
+			height = 20,
+			font = 'Helvetica'
+		)
+		self.ratingScale = visual.RatingScale(
+			win = self.expWindow,
+			pos = [0, -300],
+			low = 1,
+			high = 5,
+			precision = 1,
+			textColor = 'gray',
+			marker = 'triangle',
+			size = 0.60,
+			stretch = 1.0,
+			lineColor = 'gray',
+			markerColor = 'blue',
+			scale = None
+		)
+		self.mole = visual.ImageStim(
+			win = self.expWindow,
+			units = 'pix',
+			size = (100,100),
+			pos = (0,0),
+			image = 'images/mole.png'
+		)
+	def generateDisplay(self):
+		self.progBarOutline.draw()
+		self.progBarLevel.draw()
+		self.progBar.draw()
+		self.expText.draw()
+		self.ratingScale.draw()
+		self.mole.draw()
+		self.expWindow.flip()
+		core.wait(5)
+
+exp = WhackAMoleExperiment()
+exp.generateDisplay()
 
 
+# """
+# *********************************************************************************
+# MAIN EXPERIMENT FUNCTIONS
+# *********************************************************************************
+# """
+# def runExperiment():
+# 	setupExperiment()
 #
+# def setupExperiment():
+#
+#
+
 # class WhackAMoleExperiment(object):
 # 	def __init__(self):
 # 		self.expClock = core.Clock()
 # 		self.today = datetime.datetime.now()
-# 		self.win = visual.Window(units='pix',
-# 			winType = 'pyglet', screen = MONITOR['screen'], color = MONITOR['bg-color'],
-# 			size = MONITOR['size'],  fullscr = True, allowGUI = True
-# 		)
-# 		self.mouse = event.Mouse(win = self.win,
-# 			visible = True
-# 		)
-# 		self.instructions = visual.TextStim(self.win,
-# 			text = '', pos = TEXT['pos'], color = TEXT['color'], height = TEXT['height'],
-# 			font = TEXT['font'], wrapWidth = TEXT['wrap']
-# 		)
-# 		self.accuracy = visual.TextStim(self.win,
-# 			text = '', pos= (0, 300), color = 'black', height = 25, font = 'Arial', wrapWidth = 800
-# 		)
-# 		self.speed = visual.TextStim(self.win,
-# 			text = '', pos = (0, 200), color = 'black', height = 25, font = 'Arial', wrapWidth = 800
-# 		)
-# 		self.level = visual.TextStim(self.win,
-# 			text = '', pos = PROG_BAR['level-pos'], color = TEXT['color'], height = TEXT['height'],
-# 			font = TEXT['font'], wrapWidth = TEXT['wrap']
-# 		)
-# 		self.progressOutline = visual.Rect(self.win,
-# 			units = 'pix', pos = PROG_BAR['pos'], width = PROG_BAR['width'], height = PROG_BAR['height']+3,
-# 			lineColor = PROG_BAR['color-outline']
-# 		)
-# 		self.progressBar = visual.Rect(self.win,
-# 			units = 'pix', pos = PROG_BAR['pos'], width = PROG_BAR['width'], height = PROG_BAR['height'],
-# 			fillColor = PROG_BAR['color-fill'], opacity = PROG_BAR['fill-opacity']
-# 		)
-# 		self.ratingScale = visual.RatingScale(self.win,
-# 			pos = RATING_SCALE['pos'],  low=1, high=5, precision = 1, textColor = TEXT['color'],
-# 			marker = 'triangle', size = 0.60, stretch = 1.0, lineColor = TEXT['color'],
-# 			markerColor = 'blue', scale = None
-# 			)
-# 		self.happyFace = visual.ImageStim(self.win,
-# 			image = 'images/green-happy-face.png', pos = RATING_SCALE['pos-happy']
-# 		)
-# 		self.sadFace = visual.ImageStim(self.win,
-# 			image = 'images/red-sad-face.png', pos = RATING_SCALE['pos-sad']
-# 		)
-# 		self.mole = visual.ImageStim(self.win,
-# 			units = 'pix', size = (100,100), pos = (0,0),
-# 			image = 'images/mole.png'
-# 		)
+
 #
 # 	def runExperiment(self):
 # 		self.setupExperiment()
