@@ -8,10 +8,6 @@ Initial Version: April 24, 2015, Kathryn Schuler
 from psychopy import visual, gui, core, info, event, data
 import datetime, os, sys, itertools
 
-"IS THIS CHANGED?"
-
-"WHAT ABOUT THIS?"
-
 
 """
 *********************************************************************************
